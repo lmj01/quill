@@ -2,15 +2,20 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import rawsvg from 'rollup-plugin-rawsvg'
+import rawsvg from 'rollup-plugin-rawsvg';
 import postcss from 'rollup-plugin-postcss';
-
+const version = 2.1;
 export default [
     {
         input: 'quill.ts',
         output: {            
             file: 'dist/quill.js',
             format: 'esm',
+            assetFileNames: ((assetInfo) => {
+                console.log(assetInfo)
+            }),
+            banner: `/* my-library version ${version} */`,
+            footer: '/* follow me on Twitter */',
         },
         plugins: [            
             commonjs(),
@@ -26,8 +31,6 @@ export default [
             replace({
                 preventAssignment: true,
                 'process.env.NODE_ENV': JSON.stringify('production'),
-                // __buildDate__: () => JSON.stringify(new Date()),
-                // __buildVersion: 15,
             })
         ],
     },
@@ -35,12 +38,16 @@ export default [
         input: 'assets/core.styl',
         output: {            
             file: 'dist/quill.core.css',
+            assetFileNames: ((assetInfo) => {
+                console.log(assetInfo)
+                return '';
+            }),
         },
         plugins: [
             postcss({
                 extract: true,
                 autoModules: false,
-                use: 'stylus',
+                use: ['stylus'],
                 sourceMap: false,
             }),
         ],
@@ -54,7 +61,7 @@ export default [
             postcss({
                 extract: true,
                 autoModules: false,
-                use: 'stylus',
+                use: ['stylus'],
                 sourceMap: false,
             }),
         ],
@@ -68,7 +75,7 @@ export default [
             postcss({
                 extract: true,
                 autoModules: false,
-                use: 'stylus',
+                use: ['stylus'],
                 sourceMap: false,
             }),
         ],
